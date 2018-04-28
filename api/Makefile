@@ -2,7 +2,7 @@
 PACKAGE_VERSION=$(shell node -p "require('./package.json').version")
 PACKAGE_NAME=$(shell node -p "require('./package.json').name")
 CONTAINER_NAMESPACE=ballotor-api
-REPO_URL=837938074632.dkr.ecr.us-west-2.amazonaws.com/ballotor-api
+REPO_URL=837938074632.dkr.ecr.us-west-1.amazonaws.com/ballotor-api
 DOCKER_REPO=$(REPO_URL)/$(CONTAINER_NAMESPACE)
 
 # HELP
@@ -60,4 +60,4 @@ tag-version: ## Generate container `latest` tag
 	docker tag $(PACKAGE_NAME):$(PACKAGE_VERSION) $(DOCKER_REPO)/$(PACKAGE_NAME):$(PACKAGE_VERSION)
 
 repo-login:
-	@eval $(shell aws ecr get-login --no-include-email --region us-east-1)
+	@eval $(shell aws ecr get-login --no-include-email --region us-west-1)
