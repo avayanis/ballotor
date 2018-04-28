@@ -1,5 +1,5 @@
 {
-  "name": "ballator-api",
+  "name": "ballotor-api",
   "version": "1.0.0",
   "description": "main api",
   "main": "dist/index.js",
@@ -19,6 +19,10 @@
     "dev:start": "LOG_LEVEL=debug node dist/index.js",
     "start": "NODE_ENV=production node dist/index.js",
     "test": "mocha --reporter spec -r ts-node/register src/**/*.spec.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avayanis/ballotor.git"
   },
   "author": "Andrew Vayanis",
   "license": "UNLICENSED"
