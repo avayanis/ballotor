@@ -1,8 +1,8 @@
 # Version key/value should be on his own line
 PACKAGE_VERSION=$(shell node -p "require('./package.json').version")
 PACKAGE_NAME=$(shell node -p "require('./package.json').name")
-CONTAINER_NAMESPACE=ballotor-api
-REPO_URL=837938074632.dkr.ecr.us-west-1.amazonaws.com/ballotor-api
+CONTAINER_NAMESPACE=ballotor
+REPO_URL=837938074632.dkr.ecr.us-west-1.amazonaws.com
 DOCKER_REPO=$(REPO_URL)/$(CONTAINER_NAMESPACE)
 
 # HELP
@@ -36,10 +36,10 @@ clean:
 run: build ## Run container in development mode
 	docker run -it $(PACKAGE_NAME):$(PACKAGE_VERSION)
 
-release: build-nc publish ## Make a release by building and publishing the `{version}` ans `latest` tagged containers to ECR
+release: build-nc publish ## Make a release by building and publishing the `{version}` and `latest` tagged containers to ECR
 
 # Docker publish
-publish: repo-login publish-latest publish-version ## Publish the `{version}` ans `latest` tagged containers to ECR
+publish: repo-login publish-latest publish-version ## Publish the `{version}` and `latest` tagged containers to ECR
 
 publish-latest: tag-latest ## Publish the `latest` taged container to ECR
 	@echo 'publish latest to $(PACKAGE_VERSION) to $(DOCKER_REPO)'
