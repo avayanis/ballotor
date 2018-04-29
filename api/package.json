@@ -16,8 +16,9 @@
     "ls": "^0.2.1",
     "npm": "^6.0.0",
     "pino": "^4.16.1",
-    "uuid": "^3.2.1",
-    "request-promise": "^4.2.2"
+    "request-promise": "^4.2.2",
+    "ssn": "^1.0.3",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "@types/config": "0.0.34",

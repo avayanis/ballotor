@@ -5,7 +5,7 @@ import { Container } from "semantic-ui-react";
 import config from "./.config";
 import Home from "./Home";
 import CustomLoginComponent from "./Login";
-import Messages from "./Messages";
+import Elections from "./Elections";
 import Navbar from "./Navbar";
 import Profile from "./Profile";
 import Registration from "./Registration";
@@ -32,7 +32,7 @@ class App extends Component {
               <Route path="/implicit/callback" component={ImplicitCallback} />
               <Route path="/login" component={CustomLoginComponent} />
               <Route path="/signup" component={Registration} />
-              <SecureRoute path="/messages" component={Messages} />
+              <SecureRoute path="/elections" component={Elections} />
               <SecureRoute path="/profile" component={Profile} />
             </Container>
           </Security>

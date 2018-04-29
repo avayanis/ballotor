@@ -4,3 +4,7 @@
   margin: 0 auto;
   padding-bottom: 20px;
 }
+
+.form-error-reason {
+  color: red;
+}

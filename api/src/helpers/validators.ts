@@ -27,7 +27,7 @@ export async function verifyJWT(
   try {
     const accessTokenString: String = matches[1];
     const jwt = await oktaJwtVerifier.verifyAccessToken(accessTokenString);
-    logger.info("Valid Token");
+    logger.info("Valid Token", jwt);
     next();
   } catch (err) {
     logger.warn("Invalid token", err);
