@@ -1,10 +1,13 @@
 import { withAuth } from "@okta/okta-react";
 import React, { Component } from "react";
-import { Header, Message } from "semantic-ui-react";
+import { Header, Message, Image } from "semantic-ui-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Parser as HtmlToReactParser } from "html-to-react";
 import CircularProgress from "material-ui/CircularProgress";
+import { AutoRotatingCarousel, Slide } from "material-auto-rotating-carousel";
+import RaisedButton from "material-ui/RaisedButton";
 
+import { checkAuthentication } from "./helpers";
 import config from "./.config";
 
 export default withAuth(
@@ -14,15 +17,20 @@ export default withAuth(
       this.state = {
         candidateId: this.props.match.params.candidateId,
         candidateInfo: null,
-        failed: null
+        failed: null,
+        authenticated: null
       };
+      this.checkAuthentication = checkAuthentication.bind(this);
+      this.submitVote = this.submitVote.bind(this);
     }
 
     componentDidMount() {
+      this.checkAuthentication();
       this.getCandidateInfo();
     }
 
     componentDidUpdate() {
+      this.checkAuthentication();
       this.getCandidateInfo();
     }
 
@@ -48,13 +56,15 @@ export default withAuth(
             return;
           }
 
-          const candidateJson = await response.json();
-          console.log("candidateJson", candidateJson);
+          const json = await response.json();
+          console.log("candidateJson", json);
           const candidateInfo = {
-            name: `${candidateJson.first} ${candidateJson.last}`,
-            id: candidateJson.id,
-            image: candidateJson.portrait,
-            description: candidateJson.description
+            name: `${json.first} ${json.last}`,
+            id: json.id,
+            mainImage: json.portrait,
+            rotatingImages: json.images,
+            description: json.description,
+            title: json.title
           };
           console.log("candidateInfo", candidateInfo);
           this.setState({ candidateInfo, failed: false });
@@ -64,6 +74,10 @@ export default withAuth(
           console.error(err);
         }
       }
+    }
+
+    async submitVote(candidateId) {
+      console.log("submit the vote for", candidateId);
     }
 
     render() {
@@ -91,14 +105,47 @@ export default withAuth(
             )}
             {this.state.candidateInfo && (
               <div>
-                <Header style={{ textAlign: "center" }} as="h1">
-                  {this.state.candidateInfo.name}
-                </Header>
+                <div style={{ marginBottom: "30px" }}>
+                  <Header style={{ textAlign: "center" }} as="h1">
+                    {this.state.candidateInfo.name}
+                  </Header>
+                  <Header
+                    style={{ marginTop: "0", textAlign: "center" }}
+                    as="h3"
+                  >
+                    {this.state.candidateInfo.title}
+                  </Header>
+                  {this.state.authenticated && (
+                    <RaisedButton
+                      label="Vote"
+                      secondary={true}
+                      fullWidth={true}
+                      onClick={() =>
+                        this.submitVote(this.state.candidateInfo.id)
+                      }
+                    />
+                  )}
+                </div>
+                <Image
+                  style={{ float: "left", width: "320px" }}
+                  src={this.state.candidateInfo.mainImage}
+                />
                 <div style={{ textAlign: "center", marginTop: "0" }}>
                   {htmlToReactParser.parse(
                     this.state.candidateInfo.description
                   )}
                 </div>
+                {/* <AutoRotatingCarousel open>
+                  {this.state.candidateInfo.rotatingImages.map(
+                    (image, index) => {
+                      <Slide
+                        media={<Image src={image} />}
+                        title=""
+                        subtitle=""
+                      />;
+                    }
+                  )}
+                </AutoRotatingCarousel> */}
               </div>
             )}
           </div>
