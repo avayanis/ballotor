@@ -12,6 +12,8 @@ export interface ICandidateFull {
   first: string;
   last: string;
   description: string;
+  title: string;
+  images: string[];
   summary: string;
   dob: number;
 }
@@ -21,6 +23,8 @@ export interface ICandidateResult {
   portrait: string;
   first_name: string;
   last_name: string;
+  title: string;
+  images: string[];
   description: string;
   summary: string;
   dob: number;

@@ -1,11 +1,9 @@
 import { withAuth } from "@okta/okta-react";
 import React, { Component } from "react";
 import { Header, Message } from "semantic-ui-react";
-import Avatar from "material-ui/Avatar";
-import { List, ListItem } from "material-ui/List";
-import Subheader from "material-ui/Subheader";
+import { GridList, GridTile } from "material-ui/GridList";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import { Parser as HtmlToReactParser } from "html-to-react";
+// import { Parser as HtmlToReactParser } from "html-to-react";
 import CircularProgress from "material-ui/CircularProgress";
 
 import config from "./.config";
@@ -117,46 +115,48 @@ export default withAuth(
     }
 
     render() {
-      const htmlToReactParser = new HtmlToReactParser();
+      // const htmlToReactParser = new HtmlToReactParser();
       return (
-        <div>
+        <div style={styles.root}>
           {this.state.failed === true && (
             <div>
               <Header as="h1">Could not find Election</Header>
               <Message error header="Failed to fetch election info." />
             </div>
           )}
-          {this.state.failed === null && <p>Fetching info for Election...</p>}
+          {(this.state.failed === null || true) && (
+            <p style={{ width: "100%", textAlign: "center" }}>
+              Fetching info for Election...
+            </p>
+          )}
           {this.state.electionInfo && (
-            <div>
-              <Header as="h1">{this.state.electionInfo.title}</Header>
-              <div>{this.state.electionInfo.description}</div>
-            </div>
-          )}
-
-          {!this.state.candidatesInfo && (
-            <div style={{ textAlign: "center" }}>
-              <MuiThemeProvider>
-                <CircularProgress />
-              </MuiThemeProvider>
-              <p>Loading Candidates</p>
-            </div>
-          )}
-          {this.state.candidatesInfo && (
             <MuiThemeProvider>
-              <List>
-                <Subheader>Candidates</Subheader>
-                {this.state.candidatesInfo.map((candidate, index) => (
-                  <ListItem
-                    key={index}
-                    leftAvatar={<Avatar src={candidate.image} />}
-                    primaryText={candidate.name}
-                    secondaryText={htmlToReactParser.parse(
-                      candidate.description
-                    )}
-                  />
-                ))}
-              </List>
+              <div>
+                <Header style={{ textAlign: "center" }} as="h1">
+                  {this.state.electionInfo.title}
+                </Header>
+                <div style={{ textAlign: "center", marginTop: "0" }}>
+                  {this.state.electionInfo.description}
+                </div>
+
+                <div style={{ display: "inline-block", margin: "10px auto" }}>
+                  {!this.state.candidatesInfo && (
+                    <div style={{ textAlign: "center" }}>
+                      <CircularProgress />
+                      <p>Loading Candidates</p>
+                    </div>
+                  )}
+                  {this.state.candidatesInfo && (
+                    <GridList cellHeight={320} style={styles.gridList}>
+                      {this.state.candidatesInfo.map((candidate, index) => (
+                        <GridTile key={index} title={candidate.name}>
+                          <img src={candidate.image} alt={candidate.name} />
+                        </GridTile>
+                      ))}
+                    </GridList>
+                  )}
+                </div>
+              </div>
             </MuiThemeProvider>
           )}
         </div>
@@ -164,3 +164,16 @@ export default withAuth(
     }
   }
 );
+
+const styles = {
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-around"
+  },
+  gridList: {
+    width: 500,
+    height: 450,
+    overflowY: "auto"
+  }
+};
