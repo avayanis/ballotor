@@ -2,6 +2,7 @@ import * as config from "config";
 import * as fastify from "fastify";
 import * as pino from "pino";
 import * as OktaJwtVerifier from "@okta/jwt-verifier";
+import registerRoutes from "./routes";
 
 const logger = pino({
   name: "typescript-sample-main",
@@ -17,6 +18,7 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 });
 
 const server = fastify();
+registerRoutes(server);
 
 server.addHook("preHandler", (request, reply, next) => {
   const authHeader = (request.req.headers["authorization"] || "") as String;
@@ -41,10 +43,6 @@ server.addHook("preHandler", (request, reply, next) => {
       reply.code(401);
       next(new Error("Unauthorized"));
     });
-});
-
-server.get("/", (req, res) => {
-  res.send({ hello: "world" });
 });
 
 server.listen(config.get("http.port"), config.get("http.host"), err => {
