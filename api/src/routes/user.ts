@@ -9,10 +9,6 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { IncomingMessage, ServerResponse } from "http";
 
 export default async function routes(server: FastifyInstance, options: any) {
-  server.get("/user", { beforeHandler: verifyJWT }, async (request, reply) => {
-    return {};
-  });
-
   server.post(
     "/user",
     async (
