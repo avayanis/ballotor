@@ -5,15 +5,16 @@ import config from "./.config";
 const kIdToken = "id_token";
 const kAccessToken = "access_token";
 
+let userInfo = null;
 export async function checkAuthentication() {
-  console.log("heeeeere");
   await parseTokensFromUrlIfNecessary();
   getTokensFromLocalStorage();
-  const userinfo = await this.props.auth.getUser();
-  console.log("userinfo", userinfo);
+  if (userInfo === null) {
+    userInfo = await this.props.auth.getUser();
+    console.log("User Info: ", userInfo);
+  }
 
   const authenticated = await this.props.auth.isAuthenticated();
-  console.log("authenticated", authenticated);
 
   if (authenticated !== this.state.authenticated) {
     if (authenticated && !this.state.userinfo) {
@@ -34,7 +35,6 @@ async function parseTokensFromUrlIfNecessary() {
 
     signIn.token.parseTokensFromUrl(
       async function success(res) {
-        //console.log("debug", res[0], res[1]);
         const idToken = res[0];
         const accessToken = res[1];
         signIn.tokenManager.add(kIdToken, idToken);
@@ -56,19 +56,13 @@ async function parseTokensFromUrlIfNecessary() {
 }
 
 function getTokensFromLocalStorage() {
-  console.log("and here");
   const idToken = getObjectFromLocalStorage(kIdToken);
-  console.log("but not here");
-  console.log("idToken", idToken);
   if (idToken) {
     signIn.tokenManager.add(kIdToken, idToken);
-    console.log("~~~~~");
   }
 
   const accessToken = getObjectFromLocalStorage(kAccessToken);
-  console.log("accessToken", accessToken);
   if (accessToken) {
-    console.log("accessToken", accessToken);
     signIn.tokenManager.add(kAccessToken, accessToken);
   }
   signIn.tokenManager.refresh();
