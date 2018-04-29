@@ -60,7 +60,7 @@ export default withAuth(
     render() {
       const possibleErrors = ["First Error", "Second Error"];
       return (
-        <div>
+        <div style={{ textAlign: "center" }}>
           <Header as="h1">Upcoming Elections</Header>
           {this.state.failed === true && (
             <Message
