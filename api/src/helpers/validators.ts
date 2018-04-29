@@ -1,10 +1,11 @@
 import * as OktaJwtVerifier from "@okta/jwt-verifier";
+import * as config from "config";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { IncomingMessage, ServerResponse } from "http";
 import logger from "../helpers/logger";
 
 const oktaJwtVerifier = new OktaJwtVerifier({
-  issuer: "https://dev-459696.oktapreview.com/oauth2/default",
+  issuer: `${config.get("okta.origin")}/oauth2/default`,
   assertClaims: {
     aud: "api://default"
   }
