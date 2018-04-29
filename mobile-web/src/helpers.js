@@ -87,10 +87,10 @@ export function getSignIn() {
       baseUrl: config.oidc.issuer.split("/oauth2")[0],
       clientId: config.oidc.clientId,
       redirectUri: config.oidc.redirectUri,
-      logo: "/react.svg",
+      logo: "/ballotor_logo.png",
       i18n: {
         en: {
-          "primaryauth.title": "Sign in to React & Company"
+          "primaryauth.title": "Sign in to Ballotor"
         }
       },
       authParams: {
