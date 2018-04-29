@@ -11,8 +11,7 @@
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
     "start": "react-native-scripts start",
-    "clearCache":
-      "watchman watch-del-all && rm -rf $TMPDIR/react-* && rm -rf node_modules/ && npm install"
+    "clearCache": "watchman watch-del-all && rm -rf $TMPDIR/react-* && rm -rf node_modules/ && npm install"
   },
   "jest": {
     "preset": "jest-expo"
