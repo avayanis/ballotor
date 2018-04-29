@@ -19,9 +19,14 @@ export default async function routes(server: FastifyInstance, options: any) {
         const user = await createUser(request.body);
         return { success: true };
       } catch (err) {
-        logger.warn(err);
+        let failureReason = err.error || err.message;
+        if (failureReason.errorCauses && failureReason.errorCauses.length > 0) {
+          failureReason = failureReason.errorCauses[0].errorSummary;
+        }
+
+        logger.warn(failureReason);
         reply.code(400);
-        return { success: false };
+        return { success: false, reason: failureReason };
       }
     }
   );

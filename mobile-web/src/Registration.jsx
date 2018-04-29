@@ -5,6 +5,12 @@ import $ from "jquery";
 import "./Registration.css";
 
 export default class Registration extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { failureReason: null };
+    this.createAccount = this.createAccount.bind(this);
+  }
+  componentDidMount() {}
   createAccount(e) {
     e.preventDefault();
 
@@ -14,14 +20,16 @@ export default class Registration extends Component {
         firstName: $("#first-name").val(),
         lastName: $("#last-name").val(),
         email: $("#email").val(),
-        password: $("#password").val()
+        password: $("#password").val(),
+        ssn: $("#ssn").val()
       },
-      function() {
-        console.log("successful login!");
+      () => {
+        window.location.href = "/login";
       },
       "json"
-    ).fail(function() {
-      console.log("failed login!");
+    ).fail(err => {
+      console.log("failed login!", err);
+      this.setState({ failureReason: err.responseJSON.reason });
     });
   }
   render() {
@@ -44,6 +52,15 @@ export default class Registration extends Component {
                 floatingLabelText="Password"
               />
               <br />
+              <TextField
+                id="ssn"
+                type="password"
+                floatingLabelText="Social Security Number"
+              />
+              <br />
+              {this.state.failureReason && (
+                <p className="form-error-reason">{this.state.failureReason}</p>
+              )}
               <RaisedButton
                 label="Create Account"
                 primary={true}
