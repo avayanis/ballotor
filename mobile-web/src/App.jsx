@@ -3,7 +3,6 @@ import { Route, HashRouter } from "react-router-dom";
 import { Security, ImplicitCallback } from "@okta/okta-react";
 import { Container } from "semantic-ui-react";
 import config from "./.config";
-import Home from "./Home";
 import CustomLoginComponent from "./Login";
 import Elections from "./Elections";
 import Navbar from "./Navbar";
@@ -30,11 +29,10 @@ class App extends Component {
           >
             <Navbar />
             <Container text style={{ marginTop: "7em" }}>
-              <Route path="/" exact component={Home} />
+              <Route path="/" exact component={Elections} />
               <Route path="/implicit/callback" component={ImplicitCallback} />
               <Route path="/login" component={CustomLoginComponent} />
               <Route path="/signup" component={Registration} />
-              <Route exact path="/elections" component={Elections} />
               <Route path="/elections/:electionId" component={ViewElection} />
               <Route
                 path="/election/:electionId/candidates/:candidateId"

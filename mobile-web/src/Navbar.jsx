@@ -39,9 +39,6 @@ export default withAuth(
               <Menu.Item header>
                 <NavLink to="/">Ballotor</NavLink>
               </Menu.Item>
-              <Menu.Item id="elections-button">
-                <NavLink to="/elections">Elections</NavLink>
-              </Menu.Item>
               {this.state.authenticated === true && (
                 <Menu.Item id="profile-button">
                   <NavLink to="/profile">Profile</NavLink>
