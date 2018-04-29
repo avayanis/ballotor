@@ -4,7 +4,7 @@ import { Header, Message, Image } from "semantic-ui-react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Parser as HtmlToReactParser } from "html-to-react";
 import CircularProgress from "material-ui/CircularProgress";
-import { AutoRotatingCarousel, Slide } from "material-auto-rotating-carousel";
+// import { AutoRotatingCarousel, Slide } from "material-auto-rotating-carousel";
 import RaisedButton from "material-ui/RaisedButton";
 
 import { checkAuthentication } from "./helpers";
@@ -127,10 +127,19 @@ export default withAuth(
                   )}
                 </div>
                 <Image
-                  style={{ float: "left", width: "320px" }}
+                  style={{
+                    float: "left",
+                    width: "320px",
+                    margin: "0 10px 10px 0"
+                  }}
                   src={this.state.candidateInfo.mainImage}
                 />
-                <div style={{ textAlign: "center", marginTop: "0" }}>
+                <div
+                  style={{
+                    textAlign: "justify",
+                    marginTop: "0"
+                  }}
+                >
                   {htmlToReactParser.parse(
                     this.state.candidateInfo.description
                   )}
