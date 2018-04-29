@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Header, Message } from "semantic-ui-react";
 import { List, ListItem } from "material-ui/List";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { NavLink } from "react-router-dom";
 
 import config from "./.config";
 
@@ -74,12 +75,13 @@ export default withAuth(
               <MuiThemeProvider>
                 <List>
                   {this.state.elections.map((election, index) => (
-                    <ListItem
-                      key={index}
-                      primaryText={election.title}
-                      secondaryText={election.description}
-                      href={`/election/${election.id}`}
-                    />
+                    <NavLink to={`/elections/${election.id}`}>
+                      <ListItem
+                        key={index}
+                        primaryText={election.title}
+                        secondaryText={election.description}
+                      />
+                    </NavLink>
                   ))}
                 </List>
               </MuiThemeProvider>

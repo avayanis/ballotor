@@ -6,6 +6,7 @@ import { List, ListItem } from "material-ui/List";
 import Subheader from "material-ui/Subheader";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Parser as HtmlToReactParser } from "html-to-react";
+import CircularProgress from "material-ui/CircularProgress";
 
 import config from "./.config";
 
@@ -75,7 +76,7 @@ export default withAuth(
     }
 
     async getCandidateInfo() {
-      if (!this.state.candidates) {
+      if (!this.state.candidatesInfo) {
         try {
           const accessToken = await this.props.auth.getAccessToken();
           /* global fetch */
@@ -130,6 +131,15 @@ export default withAuth(
             <div>
               <Header as="h1">{this.state.electionInfo.title}</Header>
               <div>{this.state.electionInfo.description}</div>
+            </div>
+          )}
+
+          {!this.state.candidatesInfo && (
+            <div style={{ textAlign: "center" }}>
+              <MuiThemeProvider>
+                <CircularProgress />
+              </MuiThemeProvider>
+              <p>Loading Candidates</p>
             </div>
           )}
           {this.state.candidatesInfo && (
