@@ -5,6 +5,7 @@ import { GridList, GridTile } from "material-ui/GridList";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 // import { Parser as HtmlToReactParser } from "html-to-react";
 import CircularProgress from "material-ui/CircularProgress";
+import { NavLink } from "react-router-dom";
 
 import config from "./.config";
 
@@ -149,9 +150,11 @@ export default withAuth(
                   {this.state.candidatesInfo && (
                     <GridList cellHeight={320} style={styles.gridList}>
                       {this.state.candidatesInfo.map((candidate, index) => (
-                        <GridTile key={index} title={candidate.name}>
-                          <img src={candidate.image} alt={candidate.name} />
-                        </GridTile>
+                        <NavLink key={index} to={`/candidates/${candidate.id}`}>
+                          <GridTile title={candidate.name}>
+                            <img src={candidate.image} alt={candidate.name} />
+                          </GridTile>
+                        </NavLink>
                       ))}
                     </GridList>
                   )}
