@@ -16,9 +16,11 @@ export default withAuth(
       super(props);
       this.state = {
         candidateId: this.props.match.params.candidateId,
+        electionId: this.props.match.params.electionId,
         candidateInfo: null,
         failed: null,
-        authenticated: null
+        authenticated: null,
+        submittingVote: false
       };
       this.checkAuthentication = checkAuthentication.bind(this);
       this.submitVote = this.submitVote.bind(this);
@@ -52,7 +54,7 @@ export default withAuth(
           );
 
           if (response.status !== 200) {
-            this.setState({ failed: true });
+            this.setState({ ...this.state, failed: true });
             return;
           }
 
@@ -67,7 +69,7 @@ export default withAuth(
             title: json.title
           };
           console.log("candidateInfo", candidateInfo);
-          this.setState({ candidateInfo, failed: false });
+          this.setState({ ...this.state, candidateInfo, failed: false });
         } catch (err) {
           this.setState({ failed: true });
           /* eslint-disable no-console */
@@ -76,8 +78,37 @@ export default withAuth(
       }
     }
 
-    async submitVote(candidateId) {
-      console.log("submit the vote for", candidateId);
+    submitVote(candidateId) {
+      this.props.auth.getAccessToken().then(accessToken => {
+        const url = config.resourceServer.submitVoteUrl;
+        fetch(url.replace(":electionId", this.state.electionId), {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`
+          },
+          body: JSON.stringify({
+            candidate_id: candidateId
+          })
+        })
+          .then(response => {
+            console.log(response);
+            let message = "";
+            if (response.status === 200) {
+              message = "Your vote has been submitted successfully!";
+            } else if (response.status === 400) {
+              message = "You have already voted for this candidate.";
+            }
+            this.setState({
+              ...this.state,
+              submittingVote: false,
+              voteSubmittedMessage: message
+            });
+          })
+          .catch(err => console.log("Trouble submitting vote", err));
+        this.setState({ ...this.state, submittingVote: true });
+      });
     }
 
     render() {
@@ -110,21 +141,36 @@ export default withAuth(
                     {this.state.candidateInfo.name}
                   </Header>
                   <Header
-                    style={{ marginTop: "0", textAlign: "center" }}
+                    style={{ marginTop: "-10px", textAlign: "center" }}
                     as="h3"
                   >
-                    {this.state.candidateInfo.title}
+                    {`-${this.state.candidateInfo.title}-`}
                   </Header>
-                  {this.state.authenticated && (
-                    <RaisedButton
-                      label="Vote"
-                      secondary={true}
-                      fullWidth={true}
-                      onClick={() =>
-                        this.submitVote(this.state.candidateInfo.id)
-                      }
-                    />
+                  {this.state.voteSubmittedMessage && (
+                    <p style={{ textAlign: "center", fontSize: "14px" }}>
+                      {this.state.voteSubmittedMessage}
+                    </p>
                   )}
+                  {this.state.authenticated &&
+                    !this.state.submittingVote &&
+                    !this.state.voteSubmittedMessage && (
+                      <RaisedButton
+                        label="Vote"
+                        secondary={true}
+                        fullWidth={true}
+                        onClick={() =>
+                          this.submitVote(this.state.candidateInfo.id)
+                        }
+                      />
+                    )}
+
+                  {this.state.authenticated &&
+                    this.state.submittingVote && (
+                      <div style={{ textAlign: "center" }}>
+                        <CircularProgress />
+                        <p style={{ fontSize: "14px" }}>Submitting Vote...</p>
+                      </div>
+                    )}
                 </div>
                 <Image
                   style={{

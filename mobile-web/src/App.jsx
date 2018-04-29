@@ -37,7 +37,7 @@ class App extends Component {
               <Route exact path="/elections" component={Elections} />
               <Route path="/elections/:electionId" component={ViewElection} />
               <Route
-                path="/candidates/:candidateId"
+                path="/election/:electionId/candidates/:candidateId"
                 component={ViewCandidate}
               />
               <Route path="/profile" component={Profile} />
