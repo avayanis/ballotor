@@ -3,6 +3,7 @@ export interface IElectionResult {
   election_title: string;
   election_description: string;
   election_end_date: number;
+  votes: number;
 }
 
 export interface IElection {
@@ -10,6 +11,7 @@ export interface IElection {
   title: string;
   description: string;
   end_date: number;
+  votes: number;
 }
 
 export interface IElectionCandidateResult {

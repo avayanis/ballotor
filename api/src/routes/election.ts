@@ -115,6 +115,8 @@ async function voteForCandidate(
     const user_id = user.profile.uuid;
 
     const result = await voteModel.putVote(user_id, electionId, candidateId);
+
+    reply.send({ status: "success" });
   } catch (err) {
     console.log(err);
     switch (err.code) {

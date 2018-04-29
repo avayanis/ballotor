@@ -88,6 +88,7 @@ function convertElectionResult(result: IElectionResult): IElection {
     id: result.election_id,
     title: result.election_title,
     description: result.election_description,
-    end_date: result.election_end_date
+    end_date: result.election_end_date,
+    votes: result.votes || 0
   };
 }
