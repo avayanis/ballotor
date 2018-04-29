@@ -75,9 +75,8 @@ export default withAuth(
               <MuiThemeProvider>
                 <List>
                   {this.state.elections.map((election, index) => (
-                    <NavLink to={`/elections/${election.id}`}>
+                    <NavLink to={`/elections/${election.id}`} key={index}>
                       <ListItem
-                        key={index}
                         primaryText={election.title}
                         secondaryText={election.description}
                       />

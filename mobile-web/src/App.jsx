@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Route, HashRouter } from "react-router-dom";
-import { Security, SecureRoute, ImplicitCallback } from "@okta/okta-react";
+import { Security, ImplicitCallback } from "@okta/okta-react";
 import { Container } from "semantic-ui-react";
 import config from "./.config";
 import Home from "./Home";
@@ -10,6 +10,7 @@ import Navbar from "./Navbar";
 import Profile from "./Profile";
 import Registration from "./Registration";
 import ViewElection from "./ViewElection";
+import ViewCandidate from "./ViewCandidate";
 
 function customAuthHandler({ history }) {
   // Redirect to the /login page that has a CustomLoginComponent
@@ -35,7 +36,11 @@ class App extends Component {
               <Route path="/signup" component={Registration} />
               <Route exact path="/elections" component={Elections} />
               <Route path="/elections/:electionId" component={ViewElection} />
-              <SecureRoute path="/profile" component={Profile} />
+              <Route
+                path="/candidates/:candidateId"
+                component={ViewCandidate}
+              />
+              <Route path="/profile" component={Profile} />
             </Container>
           </Security>
         </HashRouter>
