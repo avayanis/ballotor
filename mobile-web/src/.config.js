@@ -6,6 +6,6 @@ export default {
     scope: "openid profile email"
   },
   resourceServer: {
-    messagesUrl: "http://localhost:8000/api/messages"
+    electionsUrl: "http://localhost:3000/api/v1/elections"
   }
 };
