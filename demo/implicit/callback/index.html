@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <!-- Latest CDN production Javascript and CSS: 2.6.0 -->
+  <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.6.0/js/okta-sign-in.min.js" type="text/javascript"></script>
+  <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.6.0/css/okta-sign-in.min.css" type="text/css"
+    rel="stylesheet" />
+
+  <!-- Theme file: Customize or replace this file if you want to override our default styles -->
+  <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.6.0/css/okta-theme.css" type="text/css" rel="stylesheet"
+  />
+</head>
+
+<body>
+  <div id="widget-container"></div>
+
+  <script>
+    var signIn = new OktaSignIn({
+      baseUrl: 'https://dev-459696.oktapreview.com',
+      clientId: '0oaeupt55dZBliF5Z0h7',
+      redirectUri: 'http://localhost:8080/implicit/callback',
+      authParams: {
+        issuer: 'default',
+        responseType: ['id_token', 'token'],
+        display: 'page'
+      },
+      logo: './images/ballator_logo.png',
+      language: 'en',
+      i18n: {
+        en: {
+          'primaryauth.title': 'Sign in to Ballator'
+        }
+      },
+    });
+
+    if (!signIn.token.hasTokensInUrl()) {
+      signIn.renderEl({ el: '#widget-container' },
+        function () { },
+        function (err) { console.err(err) }
+      );
+    } else {
+      signIn.token.parseTokensFromUrl(
+        function success(res) {
+          // Add the token to tokenManager to automatically renew the token when needed
+          signIn.tokenManager.add('id_token', res[0]);
+          signIn.tokenManager.add('access_token', res[1]);
+          console.log(res);
+
+        },
+        function error(err) {
+          console.log('handle error', err);
+        }
+      );
+    }
+  </script>
+</body>
+
+</html>
+<!--
+  account management and registration
+  - use active status when SSN is verified
+  - password requirements
+ -->
