@@ -1,14 +1,18 @@
 import * as candidateModel from "../models/candidate";
 import * as electionModel from "../models/election";
+import * as voteModel from "../models/vote";
 import * as uuid from "uuid";
 
 import log from "../helpers/logger";
 
+import {} from "aws-sdk";
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { promisifyAll } from "bluebird";
 
 import { ICandidatePreview, ICandidateFull } from "../interfaces/candidate";
 import { IElection } from "../interfaces/election";
+
+import { electionVoteSchema } from "./schemas/election";
 
 async function getElectionById(
   request: FastifyRequest<{}>,
@@ -90,10 +94,39 @@ async function getCandidateById(
   }
 }
 
+async function voteForCandidate(
+  request: FastifyRequest<{}>,
+  reply: FastifyReply<{}>
+) {
+  try {
+    const electionId = request.params["election_id"];
+    const candidateId = request.body["candidate_id"];
+    const user_id = "test";
+
+    const result = await voteModel.putVote(user_id, electionId, candidateId);
+  } catch (err) {
+    switch (err.code) {
+      case "ConditionalCheckFailedException":
+        reply.code(400).send({ message: "duplicate vote" });
+        break;
+      default:
+        log.error(err);
+        reply.code(500).send({ message: "Opps, something went wrong" });
+    }
+  }
+}
+
 export default async function routes(server: FastifyInstance, options: any) {
   server.get("/elections", listElections);
   server.get("/elections/:election_id", getElectionById);
   server.get("/elections/:election_id/candidates", listElectionCandidates);
+  server.post(
+    "/elections/:election_id/vote",
+    {
+      schema: electionVoteSchema
+    },
+    voteForCandidate
+  );
   server.get("/candidates/:candidate_id", getCandidateById);
   server.get(
     "/elections/uuid",
