@@ -30,6 +30,21 @@ export async function getElectionById(id: string): Promise<IElection> {
   return convertElectionResult(result.Item as IElectionResult);
 }
 
+export async function incrementVote(id: string): Promise<boolean> {
+  const query = {
+    TableName: "elections",
+    Key: {
+      election_id: id
+    },
+    ExpressionAttributeValues: { ":incr": 1 },
+    UpdateExpression: "add votes :incr"
+  };
+
+  const result = await dynamodb.updateAsync(query);
+
+  return !!result;
+}
+
 export async function fetchAvailableElections(): Promise<IElection[]> {
   const today = new Date();
   const query = {

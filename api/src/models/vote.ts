@@ -1,4 +1,5 @@
 import * as uuid from "uuid";
+import * as electionModel from "./election";
 
 import log from "../helpers/logger";
 
@@ -35,5 +36,9 @@ export async function putVote(
 
   const result = await dynamodb.putAsync(query);
 
-  return !!result;
+  if (!result) {
+    return false;
+  }
+
+  return await !!electionModel.incrementVote(election_id);
 }
