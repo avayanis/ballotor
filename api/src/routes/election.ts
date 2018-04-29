@@ -1,10 +1,104 @@
+import * as candidateModel from "../models/candidate";
+import * as electionModel from "../models/election";
+import * as uuid from "uuid";
+
+import log from "../helpers/logger";
+
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { promisifyAll } from "bluebird";
+
+import { ICandidatePreview, ICandidateFull } from "../interfaces/candidate";
+import { IElection } from "../interfaces/election";
+
+async function getElectionById(
+  request: FastifyRequest<{}>,
+  reply: FastifyReply<{}>
+) {
+  const electionId = request.params["election_id"];
+
+  try {
+    const election = await electionModel.getElectionById(electionId);
+
+    reply.send(election);
+  } catch (err) {
+    log.error(err);
+
+    reply.code(500).send({ message: "Opps, something went wrong" });
+  }
+}
+
+async function listElections(
+  request: FastifyRequest<{}>,
+  reply: FastifyReply<{}>
+) {
+  try {
+    const elections = await electionModel.fetchAvailableElections();
+
+    reply.send(elections);
+  } catch (err) {
+    log.error(err);
+
+    reply.code(500).send({ message: "Opps, something went wrong" });
+  }
+}
+
+async function listElectionCandidates(
+  request: FastifyRequest<{}>,
+  reply: FastifyReply<{}>
+) {
+  try {
+    const electionId = request.params["election_id"];
+    const results = await electionModel.fetchElectionCandidates(electionId);
+    let previews: ICandidatePreview[] = [];
+
+    let promises: Promise<ICandidateFull>[] = results.map(result => {
+      return candidateModel.getCandidateById(result.candidate_id);
+    });
+
+    let candidates = await Promise.all(promises);
+    candidates.forEach(candidate => {
+      previews.push({
+        id: candidate.id,
+        portrait: candidate.portrait,
+        first: candidate.first,
+        last: candidate.last,
+        summary: candidate.summary
+      });
+    });
+
+    reply.send(candidates);
+  } catch (err) {
+    log.error(err);
+
+    reply.code(500).send({ message: "Opps, something went wrong" });
+  }
+}
+
+async function getCandidateById(
+  request: FastifyRequest<{}>,
+  reply: FastifyReply<{}>
+) {
+  try {
+    const id = request.params["candidate_id"];
+    const candidate = await candidateModel.getCandidateById(id);
+
+    reply.send(candidate);
+  } catch (err) {
+    log.error(err);
+
+    reply.code(500).send({ message: "Opps, something went wrong" });
+  }
+}
 
 export default async function routes(server: FastifyInstance, options: any) {
+  server.get("/elections", listElections);
+  server.get("/elections/:election_id", getElectionById);
+  server.get("/elections/:election_id/candidates", listElectionCandidates);
+  server.get("/candidates/:candidate_id", getCandidateById);
   server.get(
-    "/election",
-    async (request: FastifyRequest<{}>, reply: FastifyReply<{}>) => {
-      return { hello: "world" };
+    "/elections/uuid",
+    (request: FastifyRequest<{}>, reply: FastifyReply<{}>) => {
+      reply.send({ uuid: uuid.v4() });
     }
   );
 }
