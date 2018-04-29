@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Header, Message } from "semantic-ui-react";
 import { List, ListItem } from "material-ui/List";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { NavLink } from "react-router-dom";
 
 import config from "./.config";
 
@@ -33,20 +34,17 @@ export default withAuth(
             return;
           }
 
-          let index = 0;
           const data = await response.json();
           console.log(data, "data");
           const elections = data.map(election => {
             const date = new Date(election.end_date);
             const day = date.toLocaleDateString();
             const time = date.toLocaleTimeString();
-            index += 1;
             return {
               date: `${day} ${time}`,
               description: election.description,
               title: election.title,
-              id: election.id,
-              key: `election-${index}`
+              id: election.id
             };
           });
           console.log("elections", elections);
@@ -76,12 +74,14 @@ export default withAuth(
             <div>
               <MuiThemeProvider>
                 <List>
-                  {this.state.elections.map(election => (
-                    <ListItem
-                      primaryText={election.title}
-                      secondaryText={election.description}
-                      href="google.com"
-                    />
+                  {this.state.elections.map((election, index) => (
+                    <NavLink to={`/elections/${election.id}`}>
+                      <ListItem
+                        key={index}
+                        primaryText={election.title}
+                        secondaryText={election.description}
+                      />
+                    </NavLink>
                   ))}
                 </List>
               </MuiThemeProvider>

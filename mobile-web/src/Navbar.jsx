@@ -1,7 +1,8 @@
 import { withAuth } from "@okta/okta-react";
 import React, { Component } from "react";
-import { Container, Image, Menu } from "semantic-ui-react";
+import { Container, Menu } from "semantic-ui-react";
 import { checkAuthentication } from "./helpers";
+import { NavLink } from "react-router-dom";
 
 export default withAuth(
   class Navbar extends Component {
@@ -34,18 +35,17 @@ export default withAuth(
         <div>
           <Menu fixed="top" inverted>
             <Container>
-              <Menu.Item as="a" header href="/">
-                <Image size="mini" src="/react.svg" />
-                &nbsp; Okta-React Sample Project
+              <Menu.Item header>
+                <NavLink to="/">Home</NavLink>
               </Menu.Item>
               {this.state.authenticated === true && (
-                <Menu.Item id="elections-button" as="a" href="/elections">
-                  Elections
+                <Menu.Item id="elections-button">
+                  <NavLink to="/elections">Elections</NavLink>
                 </Menu.Item>
               )}
               {this.state.authenticated === true && (
-                <Menu.Item id="profile-button" as="a" href="/profile">
-                  Profile
+                <Menu.Item id="profile-button">
+                  <NavLink to="/profile">Profile</NavLink>
                 </Menu.Item>
               )}
               {this.state.authenticated === true && (
