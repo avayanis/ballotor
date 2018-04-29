@@ -12,8 +12,11 @@
 
 import React, { Component } from "react";
 import { Container, Icon, Image, Menu } from "semantic-ui-react";
+import { Card, CardTitle, TextField, RaisedButton } from "material-ui";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import $ from "jquery";
 import config from "./.samples.config";
+import "./Registration.css";
 
 export default class Registration extends Component {
   constructor(props) {
@@ -24,7 +27,7 @@ export default class Registration extends Component {
     e.preventDefault();
 
     $.post(
-      "http://localhost:3000/user",
+      "http://localhost:3000/api/v1/user",
       {
         firstName: $("#first-name").val(),
         lastName: $("#last-name").val(),
@@ -41,31 +44,34 @@ export default class Registration extends Component {
   }
   render() {
     return (
-      <form>
-        <input
-          type="text"
-          id="first-name"
-          name="first-name"
-          placeholder="First Name"
-        />
-        <input
-          type="text"
-          id="last-name"
-          name="last-name"
-          placeholder="Last Name"
-        />
-        <input type="email" id="email" name="email" placeholder="Email" />
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-        />
+      <div className="registration">
+        <MuiThemeProvider>
+          <Card>
+            <CardTitle title="Sign up for Ballator" />
 
-        <button type="submit" onClick={this.createAccount}>
-          Create Account
-        </button>
-      </form>
+            <form>
+              <TextField id="first-name" floatingLabelText="First Name" />
+              <br />
+              <TextField id="last-name" floatingLabelText="Last Name" />
+              <br />
+              <TextField id="email" type="email" floatingLabelText="Email" />
+              <br />
+              <TextField
+                id="password"
+                type="password"
+                floatingLabelText="Password"
+              />
+              <br />
+              <RaisedButton
+                label="Create Account"
+                primary={true}
+                type="submit"
+                onClick={this.createAccount}
+              />
+            </form>
+          </Card>
+        </MuiThemeProvider>
+      </div>
     );
   }
 }
