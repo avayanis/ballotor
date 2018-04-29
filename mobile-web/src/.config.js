@@ -18,7 +18,7 @@ export default {
   oidc: {
     clientId: "0oaeupt55dZBliF5Z0h7",
     issuer: "https://dev-459696.oktapreview.com/oauth2/default",
-    redirectUri: "http://localhost:8080",
+    redirectUri: "http://localhost:8080/auth.html",
     scope: "openid profile email"
   },
   resourceServer: {
