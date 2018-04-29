@@ -150,7 +150,12 @@ export default withAuth(
                   {this.state.candidatesInfo && (
                     <GridList cellHeight={320} style={styles.gridList}>
                       {this.state.candidatesInfo.map((candidate, index) => (
-                        <NavLink key={index} to={`/candidates/${candidate.id}`}>
+                        <NavLink
+                          key={index}
+                          to={`/election/${this.state.electionId}/candidates/${
+                            candidate.id
+                          }`}
+                        >
                           <GridTile title={candidate.name}>
                             <img src={candidate.image} alt={candidate.name} />
                           </GridTile>

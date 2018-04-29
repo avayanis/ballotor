@@ -26,6 +26,8 @@ export default {
     specificElectionUrl: "http://localhost:3000/api/v1/elections/:electionId",
     electionCandidatesUrl:
       "http://localhost:3000/api/v1/elections/:electionId/candidates",
-    specificCandidateUrl: "http://localhost:3000/api/v1/candidates/:candidateId"
+    specificCandidateUrl:
+      "http://localhost:3000/api/v1/candidates/:candidateId",
+    submitVoteUrl: "http://localhost:3000/api/v1/elections/:electionId/vote"
   }
 };
