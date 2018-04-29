@@ -33,6 +33,17 @@ async function checkSSNTaken(hashedSSN: string) {
   return usersWithSameSSN.length > 0;
 }
 
+export async function getUserByEmail(email: string) {
+  return request({
+    method: "GET",
+    uri: `${config.get("okta.origin")}/api/v1/users/${email}`,
+    json: true,
+    headers: {
+      Authorization: `SSWS ${config.get("okta.apiKey")}`
+    }
+  });
+}
+
 export async function createUser(body: any) {
   const { firstName, lastName, email, password, ssn } = body;
   const parseSSN = new ParseSSN(ssn);

@@ -13,6 +13,10 @@ import { ICandidatePreview, ICandidateFull } from "../interfaces/candidate";
 import { IElection } from "../interfaces/election";
 
 import { electionVoteSchema } from "./schemas/election";
+import { verifyJWT } from "../helpers/validators";
+import { getJWT } from "../helpers/jwt";
+import { IncomingMessage } from "http";
+import { getUserByEmail } from "../controllers/user";
 
 async function getElectionById(
   request: FastifyRequest<{}>,
@@ -95,16 +99,24 @@ async function getCandidateById(
 }
 
 async function voteForCandidate(
-  request: FastifyRequest<{}>,
+  request: FastifyRequest<IncomingMessage>,
   reply: FastifyReply<{}>
 ) {
   try {
     const electionId = request.params["election_id"];
     const candidateId = request.body["candidate_id"];
-    const user_id = "test";
+    const jwt = await getJWT(request);
+    if (!jwt) {
+      return reply.code(400).send({ message: "Invalid Token" });
+    }
+
+    const email = jwt.claims.sub;
+    const user = await getUserByEmail(email);
+    const user_id = user.profile.uuid;
 
     const result = await voteModel.putVote(user_id, electionId, candidateId);
   } catch (err) {
+    console.log(err);
     switch (err.code) {
       case "ConditionalCheckFailedException":
         reply.code(400).send({ message: "duplicate vote" });
@@ -123,7 +135,8 @@ export default async function routes(server: FastifyInstance, options: any) {
   server.post(
     "/elections/:election_id/vote",
     {
-      schema: electionVoteSchema
+      schema: electionVoteSchema,
+      beforeHandler: verifyJWT
     },
     voteForCandidate
   );
