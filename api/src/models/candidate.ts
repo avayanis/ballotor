@@ -33,8 +33,10 @@ function convertCandidateResult(result: ICandidateResult): ICandidateFull {
     portrait: result.portrait,
     first: result.first_name,
     last: result.last_name,
+    title: result.title,
     description: result.description,
     summary: result.summary,
+    images: result.images,
     dob: result.dob
   };
 }
