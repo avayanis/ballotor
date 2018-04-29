@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Container, Menu } from "semantic-ui-react";
 import { checkAuthentication } from "./helpers";
 import { NavLink } from "react-router-dom";
+import "./Navbar.css";
 
 export default withAuth(
   class Navbar extends Component {
@@ -33,10 +34,10 @@ export default withAuth(
     render() {
       return (
         <div>
-          <Menu fixed="top" inverted>
+          <Menu id="nav-bar" fixed="top" inverted>
             <Container>
               <Menu.Item header>
-                <NavLink to="/">Home</NavLink>
+                <NavLink to="/">Ballotor</NavLink>
               </Menu.Item>
               {this.state.authenticated === true && (
                 <Menu.Item id="elections-button">
