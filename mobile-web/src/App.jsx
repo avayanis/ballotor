@@ -9,6 +9,7 @@ import Elections from "./Elections";
 import Navbar from "./Navbar";
 import Profile from "./Profile";
 import Registration from "./Registration";
+import ViewElection from "./ViewElection";
 
 function customAuthHandler({ history }) {
   // Redirect to the /login page that has a CustomLoginComponent
@@ -33,6 +34,10 @@ class App extends Component {
               <Route path="/login" component={CustomLoginComponent} />
               <Route path="/signup" component={Registration} />
               <SecureRoute path="/elections" component={Elections} />
+              <SecureRoute
+                path="/election/:electionId"
+                component={ViewElection}
+              />
               <SecureRoute path="/profile" component={Profile} />
             </Container>
           </Security>

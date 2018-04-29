@@ -33,20 +33,17 @@ export default withAuth(
             return;
           }
 
-          let index = 0;
           const data = await response.json();
           console.log(data, "data");
           const elections = data.map(election => {
             const date = new Date(election.end_date);
             const day = date.toLocaleDateString();
             const time = date.toLocaleTimeString();
-            index += 1;
             return {
               date: `${day} ${time}`,
               description: election.description,
               title: election.title,
-              id: election.id,
-              key: `election-${index}`
+              id: election.id
             };
           });
           console.log("elections", elections);
@@ -76,11 +73,12 @@ export default withAuth(
             <div>
               <MuiThemeProvider>
                 <List>
-                  {this.state.elections.map(election => (
+                  {this.state.elections.map((election, index) => (
                     <ListItem
+                      key={index}
                       primaryText={election.title}
                       secondaryText={election.description}
-                      href="google.com"
+                      href={`/election/${election.id}`}
                     />
                   ))}
                 </List>

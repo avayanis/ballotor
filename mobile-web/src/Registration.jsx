@@ -1,16 +1,10 @@
 import React, { Component } from "react";
-import { Container, Icon, Image, Menu } from "semantic-ui-react";
 import { Card, CardTitle, TextField, RaisedButton } from "material-ui";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import $ from "jquery";
-import config from "./.config";
 import "./Registration.css";
 
 export default class Registration extends Component {
-  constructor(props) {
-    super(props);
-  }
-  componentDidMount() {}
   createAccount(e) {
     e.preventDefault();
 

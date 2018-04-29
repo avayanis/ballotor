@@ -1,8 +1,11 @@
 import { withAuth } from "@okta/okta-react";
 import React, { Component } from "react";
 import { Header, Message } from "semantic-ui-react";
+import Avatar from "material-ui/Avatar";
 import { List, ListItem } from "material-ui/List";
+import Subheader from "material-ui/Subheader";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { Parser as HtmlToReactParser } from "html-to-react";
 
 import config from "./.config";
 
@@ -10,47 +13,100 @@ export default withAuth(
   class ViewElection extends Component {
     constructor(props) {
       super(props);
-      this.state = { election: null, failed: null };
+      this.state = {
+        electionId: this.props.match.params.electionId,
+        electionInfo: null,
+        candidates: null,
+        failed: null
+      };
     }
 
     componentDidMount() {
       this.getElectionInfo();
+      this.getCandidateInfo();
+    }
+
+    componentDidUpdate() {
+      this.getElectionInfo();
+      this.getCandidateInfo();
     }
 
     async getElectionInfo() {
-      if (!this.state.elections) {
+      if (!this.state.electionInfo) {
         try {
           const accessToken = await this.props.auth.getAccessToken();
           /* global fetch */
-          const response = await fetch(config.resourceServer.electionsUrl, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
+          const response = await fetch(
+            config.resourceServer.specificElectionUrl.replace(
+              ":electionId",
+              this.state.electionId
+            ),
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`
+              }
             }
-          });
+          );
 
           if (response.status !== 200) {
             this.setState({ failed: true });
             return;
           }
 
-          let index = 0;
-          const data = await response.json();
-          console.log(data, "data");
-          const elections = data.map(election => {
-            const date = new Date(election.end_date);
-            const day = date.toLocaleDateString();
-            const time = date.toLocaleTimeString();
-            index += 1;
+          const electionJson = await response.json();
+          console.log("electionJson", electionJson);
+          const date = new Date(electionJson.end_date);
+          const day = date.toLocaleDateString();
+          const time = date.toLocaleTimeString();
+          const electionInfo = {
+            date: `${day} ${time}`,
+            description: electionJson.description,
+            title: electionJson.title,
+            id: electionJson.id
+          };
+          console.log("electionInfo", electionInfo);
+          this.setState({ electionInfo, failed: false });
+        } catch (err) {
+          this.setState({ failed: true });
+          /* eslint-disable no-console */
+          console.error(err);
+        }
+      }
+    }
+
+    async getCandidateInfo() {
+      if (!this.state.candidates) {
+        try {
+          const accessToken = await this.props.auth.getAccessToken();
+          /* global fetch */
+          const response = await fetch(
+            config.resourceServer.electionCandidatesUrl.replace(
+              ":electionId",
+              this.state.electionId
+            ),
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`
+              }
+            }
+          );
+
+          if (response.status !== 200) {
+            this.setState({ failed: true });
+            return;
+          }
+
+          const candidatesJson = await response.json();
+          console.log("candidatesJson", candidatesJson);
+          const candidates = candidatesJson.map(candidate => {
             return {
-              date: `${day} ${time}`,
-              description: election.description,
-              title: election.title,
-              id: election.id,
-              key: `election-${index}`
+              name: `${candidate.first} ${candidate.last}`,
+              id: candidate.id,
+              image: candidate.portrait,
+              description: candidate.description
             };
           });
-          console.log("elections", elections);
-          this.setState({ elections, failed: false });
+          this.setState({ candidatesInfo: candidates, failed: false });
         } catch (err) {
           this.setState({ failed: true });
           /* eslint-disable no-console */
@@ -60,32 +116,38 @@ export default withAuth(
     }
 
     render() {
-      const possibleErrors = ["First Error", "Second Error"];
+      const htmlToReactParser = new HtmlToReactParser();
       return (
         <div>
-          <Header as="h1">Upcoming Elections</Header>
           {this.state.failed === true && (
-            <Message
-              error
-              header="Failed to fetch elections.  Please verify the following:"
-              list={possibleErrors}
-            />
-          )}
-          {this.state.failed === null && <p>Fetching Elections..</p>}
-          {this.state.elections && (
             <div>
-              <MuiThemeProvider>
-                <List>
-                  {this.state.elections.map(election => (
-                    <ListItem
-                      primaryText={election.title}
-                      secondaryText={election.description}
-                      href="google.com"
-                    />
-                  ))}
-                </List>
-              </MuiThemeProvider>
+              <Header as="h1">Could not find Election</Header>
+              <Message error header="Failed to fetch election info." />
             </div>
+          )}
+          {this.state.failed === null && <p>Fetching info for Election...</p>}
+          {this.state.electionInfo && (
+            <div>
+              <Header as="h1">{this.state.electionInfo.title}</Header>
+              <div>{this.state.electionInfo.description}</div>
+            </div>
+          )}
+          {this.state.candidatesInfo && (
+            <MuiThemeProvider>
+              <List>
+                <Subheader>Candidates</Subheader>
+                {this.state.candidatesInfo.map((candidate, index) => (
+                  <ListItem
+                    key={index}
+                    leftAvatar={<Avatar src={candidate.image} />}
+                    primaryText={candidate.name}
+                    secondaryText={htmlToReactParser.parse(
+                      candidate.description
+                    )}
+                  />
+                ))}
+              </List>
+            </MuiThemeProvider>
           )}
         </div>
       );
