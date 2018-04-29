@@ -20,6 +20,7 @@ export default async function routes(server: FastifyInstance, options: any) {
         return { success: true };
       } catch (err) {
         logger.warn(err);
+        reply.code(400);
         return { success: false };
       }
     }
